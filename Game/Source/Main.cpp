@@ -3,6 +3,7 @@
 
 int main(int argc, char* argv[])
 {
+	
 	// initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
@@ -26,16 +27,30 @@ int main(int argc, char* argv[])
 	// create renderer
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 
+	for (int i = 0; i < 500; i++) {
+		SDL_SetRenderDrawColor(renderer, rand() % 256, rand() % 256, rand() % 256, 0);
+		SDL_RenderDrawLine(renderer, rand() % 1000, rand() % 1000, rand() % 1000, rand() % 1000);
+	}
+
 	while (true)
 	{
+		
+
 		// clear screen
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-		SDL_RenderClear(renderer);
+		/*SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+		SDL_RenderClear(renderer);*/
 
 		// draw line
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+		//Shape	
+
+		/*SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 		SDL_RenderDrawLine(renderer,600,300,150,300);
-		SDL_RenderDrawLine(renderer, 600, 300, 400, 400); //x1 , y1, x2, y2 
+		SDL_RenderDrawLine(renderer, 600, 300, 350, 400);
+		SDL_RenderDrawLine(renderer, 150, 300, 350, 400);*/   //x1 , y1, x2, y2 
+		
+		
+		
+
 		// show screen
 		SDL_RenderPresent(renderer);
 	}
