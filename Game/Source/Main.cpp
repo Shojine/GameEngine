@@ -1,6 +1,9 @@
 #include "Renderer.h"
 #include "Vector2.h"
 #include "Input.h"
+#include "Particle.h"
+#include "Random.h"
+#include "E_Timer.h"
 #include <SDL.h>
 #include<vector>
 #include <iostream>
@@ -14,18 +17,21 @@ int main(int argc, char* argv[])
 	//create system
 	Renderer renderer;
 	renderer.Initialize();
-	renderer.CreateWindow("Game Engine", 800, 600);
+	renderer.CreateWindow("Game Engine", 1020, 800);
 
 	Input input;
 	input.Initialize();
 
+	Time time;
 
 
-	Vector2 v1{ 400,300 };
-	Vector2 v2{ 600,200 };
 
-	std::vector<Vector2> points;
-
+	//std::vector<Vector2> points;
+	std::vector<Particle> particles;
+	/*for(int i = 0; i < 0; i++)
+	{
+		particles.push_back(Particle{ {rand() % 800,rand() % 800},{randomf(100.0f,300.0f), 0.0f}});
+	}*/
 	
 
 	/*for(int i = 0; i < 100; i++)
@@ -36,6 +42,9 @@ int main(int argc, char* argv[])
 	bool quit = false;
 	while (!quit)
 	{
+		time.Tick();
+		std::cout << time.GetTime() << std::endl;
+	
 		//input
 		//update
 		//draw
@@ -52,10 +61,48 @@ int main(int argc, char* argv[])
 
 		//Update
 		Vector2 mousePosition = input.GetMousePosition();
+
+		if (input.GetMouseButtonDown(0))
+		{
+			
+			particles.push_back(Particle{ mousePosition,{randomf(-100.0f,100.0f), randomf(-100,100)},randomf(1,5)});
+		}
+
+		for (Particle& particle : particles)
+		{
+			particle.Update(time.GetDeltaTime());
+
+			if (particle.position.x > 800) particle.position.x = 0;
+			if (particle.position.x < 0) particle.position.x = 800;
+
+		}
+
+
+
+
+			renderer.SetColor(0, 0, 0, 0);
+			renderer.BeginFrame();
+
+
+		  //  renderer.SetColor(255, 255, 255, 0);
+			
+			
+			for (Particle particle : particles)
+			{
+				particle.Draw(renderer);
+			}
+
+
+
+
+
+
+
+
 		//std::cout << mousePosition.x << " " << mousePosition.y << std::endl;
 
 
-		if (input.GetMouseButtonDown(0) && !input.GetPrevMouseButtonDown(0))
+		/*if (input.GetMouseButtonDown(0) && !input.GetPrevMouseButtonDown(0))
 		{
 			std::cout << "Mouse Pressed\n";
 			points.push_back(mousePosition);
@@ -65,13 +112,13 @@ int main(int argc, char* argv[])
 			float distance = (points.back() - mousePosition).Length();
 			
 			if (distance > 5) points.push_back(mousePosition);
-		}
+		}*/
 
-		for (int i = 0; points.size() > 1 && i < points.size() - 1; i++)
+		/*for (int i = 0; points.size() > 1 && i < points.size() - 1; i++)
 		{
 			renderer.SetColor(255, 255, 255, 0);
 			renderer.DrawLine(points[i].x, points[i].y, points[i + 1].x, points[i + 1].y);
-		}
+		}*/
 
 
 
