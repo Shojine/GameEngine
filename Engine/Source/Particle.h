@@ -4,9 +4,20 @@
 
 struct Particle
 {
+	struct Data
+	{
+		Vector2 position{ 0, 0 };
+		Vector2 velocity{ 0, 0 };
+		float lifespan = 0;
+
+	};
+
+
 	Vector2 position{ 0, 0 };
 	Vector2 velocity{ 0, 0 };
 	float lifespan = 0;
+	
+	bool isActive{ false };
 	
 
 	Particle() = default;
@@ -19,6 +30,8 @@ struct Particle
 		velocity{ velocity },
 		lifespan{ lifespan }
 	{}; 
+
+	void Initalize(const Data& data);
 	
 	void Update(float dt);
 	void Draw(Renderer& renderer);

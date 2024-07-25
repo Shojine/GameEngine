@@ -4,23 +4,33 @@
 bool Renderer::Initialize()
 {
 
+	// initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		std::cerr << "Error initializing SDL: " << SDL_GetError() << std::endl;
 		return false;
 	}
-
+	// initialize TTF SDL
+	if (TTF_Init() < 0)
+	{
+		std::cerr << "Error initializing SDL TTF: " << SDL_GetError() << std::endl;
+		return false;
+	}
 
 	return true;
 }
 
 void Renderer::ShutDown()
 {
+	SDL_DestroyRenderer(m_renderer);
+	SDL_DestroyWindow(m_window);
+	TTF_Quit();
 }
 
 bool Renderer::CreateWindow(std::string title, int width, int height)
 {
-
+	m_width = width;
+	m_height = height;
 	// create window
 	// returns pointer to window if successful or nullptr if failed
 	m_window = SDL_CreateWindow(title.c_str(),
@@ -35,7 +45,7 @@ bool Renderer::CreateWindow(std::string title, int width, int height)
 	}
 
 	// create renderer
-	m_renderer = SDL_CreateRenderer(m_window, -1, 0);
+	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
 
 	return true;
@@ -74,4 +84,16 @@ void Renderer::DrawPoint(int x, int y)
 void Renderer::DrawPoint(float x, float y)
 {
 	SDL_RenderDrawPointF(m_renderer, x, y);
+}
+
+void Renderer::DrawRect(int x, int y, int w, int h)
+{
+	SDL_Rect rect{ x - w  / 2 , y - h / 2 , w, h };
+	SDL_RenderFillRect(m_renderer, &rect);
+}
+
+void Renderer::DeawRact(float x, float y, float w, float h)
+{
+	SDL_FRect rect{ x - w / 2, y - h / 2, w, h };
+	SDL_RenderFillRectF(m_renderer, &rect);
 }
