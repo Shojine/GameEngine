@@ -49,11 +49,10 @@ void Player::Update(float dt)
 		Model* model = new Model{ points, Color{ 0, 1, 1 } };
 		Transform transform{ m_transform.position,m_transform.rotation, 1.0f };
 
-		std::unique_ptr<Bullet> bullet = std::make_unique<Bullet>(400.0f, transform, model);
+		std::unique_ptr<Bullet> bullet = std::make_unique<Bullet>(10.0f, transform, model);
 		bullet->SetLifeSpan(1);
 		bullet->SetTag("playerBullet");
 		m_scene->AddActor(std::move(bullet));
-		
 	}
 
 	Actor::Update(dt);

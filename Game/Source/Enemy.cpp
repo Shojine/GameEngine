@@ -10,7 +10,7 @@ void Enemy::Update(float dt)
 	if (player)
 	{
 		Vector2 direction = player->GetTransform().position - m_transform.position;
-		m_velocity = direction.Normalized() * m_speed * dt;
+		m_velocity += direction.Normalized() * m_speed * dt;
 		m_transform.rotation = direction.Angle();
 	}
 

@@ -39,13 +39,15 @@ private:
 	float m_spawnTime{ 0 };
 	float m_stateTimer{ 0 };
 
+	int m_roundCounter{ 0 };
+	int m_enemyCount{ 0 };
+
 	Font* m_font{ nullptr };
 	Font* m_fontLarge{ nullptr };
 
 	
 	Text* m_textScore{ nullptr };
 	Text* m_textLives{ nullptr };
-
-
+	Text* m_textRound{ nullptr };
 	Text* m_textTitle{ nullptr };
 };

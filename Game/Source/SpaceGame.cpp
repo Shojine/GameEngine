@@ -21,6 +21,7 @@ bool SpaceGame::Initialize()
 
     m_textScore = new Text(m_font);
     m_textLives = new Text(m_font);
+    m_textRound = new Text(m_font);
     m_textTitle = new Text(m_fontLarge);
 
     return true;
@@ -43,44 +44,65 @@ void SpaceGame::Update(float dt)
         }
         break;
     case SpaceGame::eState::StartGame:
-        m_scene->RemoveAll();
+       
         m_lives = 3;
         m_score = 0;
         m_state = eState::StartLevel;
         break;
     case SpaceGame::eState::StartLevel:
     {
+        m_scene->RemoveAll();
         Transform transform{ { g_engine.GetRenderer().GetWidth() / 2, g_engine.GetRenderer().GetHeight() / 2}, 0, 2 };
         Model* model = new Model{ GameData::shipPoints, Color{0,1,1} };
         auto player = std::make_unique<Player>(randomf(300, 500), transform, model);
         player->SetDamping(2.0f);
         player->SetTag("Player");
         m_scene->AddActor(std::move(player));
+       
     }
-    m_spawnTime = 3;
+    m_spawnTime = 10;
     m_spawnTimer = m_spawnTime;
+    m_roundCounter = 0;
+    m_enemyCount = 1;
 
         m_state = eState::Game;
         break;
     case SpaceGame::eState::Game:
         m_spawnTimer -= dt;
+       
         if(m_spawnTimer <= 0)
         {
-            m_spawnTime = 0.2f;
+            m_spawnTime -= 0.2f;
+            m_spawnTime = Math::Max(m_spawnTime,0.5f);
             m_spawnTimer = m_spawnTime;
         //create enemy
-        auto* enemyModel = new Model{ GameData::shipPoints, Color{1,0,0} };
-        std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>(400.0f, Transform{ {random(g_engine.GetRenderer().GetWidth()), random(g_engine.GetRenderer().GetHeight())},0,2 }, enemyModel);
-        enemy->SetDamping(1.0f);
-        enemy->SetTag("Enemy");
-        m_scene->AddActor(std::move(enemy));
+
+            m_roundCounter += 1;
+            // every 5 rounds it should add an enemy more
+            if (m_roundCounter % 5 == 0)
+            {
+                m_enemyCount += 1;
+            }
+            for (int i = 0; i < m_enemyCount; i++)
+            {
+                auto* enemyModel = new Model{ GameData::shipPoints, Color{1,0,0} };
+                auto enemy = std::make_unique<Enemy>(100.0f, Transform{ {random(g_engine.GetRenderer().GetWidth()), random(g_engine.GetRenderer().GetHeight())},0,2 }, enemyModel);
+                enemy->SetDamping(1.0f);
+                enemy->SetTag("Enemy");
+                m_scene->AddActor(std::move(enemy));
+            }
 
         //create pickup
-        auto* pickupModel = new Model{ GameData::shipPoints, Color{1,0,0} };
-        std::unique_ptr<Pickup> pickup = std::make_unique<Pickup>(Transform{ {random(g_engine.GetRenderer().GetWidth()), random(g_engine.GetRenderer().GetHeight())},0,2 }, enemyModel);
+        auto* pickupModel = new Model{ GameData::pickupPoints, Color{1,0,1} };
+        auto pickup = std::make_unique<Pickup>(Transform{ {random(g_engine.GetRenderer().GetWidth()), random(g_engine.GetRenderer().GetHeight())},0,2 }, pickupModel);
         pickup->SetDamping(1.0f);
         pickup->SetTag("Pickup");
         m_scene->AddActor(std::move(pickup));
+
+
+       
+        
+
 
         }
 
@@ -130,6 +152,10 @@ void SpaceGame::Draw(Renderer& renderer)
     text = "Lives" + std::to_string(m_lives);
     m_textLives->Create(renderer, text, { 0,1,0,1 });
     m_textLives->Draw(renderer, renderer.GetWidth() - 100, 20);
+
+    text = "Round" + std::to_string(m_roundCounter);
+    m_textRound->Create(renderer, text, { 0,1,0,1 });
+    m_textRound->Draw(renderer, renderer.GetWidth() / 2, 20);
 
     m_scene->Draw(renderer);
 }

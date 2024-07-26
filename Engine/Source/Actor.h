@@ -21,7 +21,7 @@ public:
 	virtual void Draw(Renderer& renderer);
 
 	void SetDamping(float damping) { m_damping = damping; }
-	void SetLifeSpan(float lifespan) { m_lifespan = m_lifespan; }
+	void SetLifeSpan(float lifespan) { m_lifespan = lifespan; }
 	void SetTag(const std::string& tag) { m_tag = tag; }
 	
 	const std::string& GetTag() { return m_tag; }
